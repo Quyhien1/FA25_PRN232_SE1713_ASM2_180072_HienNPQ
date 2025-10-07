@@ -10,15 +10,20 @@ namespace OEMEVWarrantyManagementSystem.GraphQl.WebAPI.HienNPQ.GraphQl
         private readonly IServiceProviders _serviceProviders;
         public Queries(IServiceProviders serviceProviders) => _serviceProviders = serviceProviders ?? throw new ArgumentNullException(nameof(serviceProviders));
 
-        public async Task<List<BookingHienNpq>> GetBookingHienNpqs()
+        [GraphQLName("bookings")]
+        public async Task<List<BookingHienNpq>> GetBookingsAsync()
         {
             return await _serviceProviders.BookingHienNpqService.GetAllAsync();
         }
-        public async Task<BookingHienNpq> GetBookingHienNpqs(int id)
+
+        [GraphQLName("bookingById")]
+        public async Task<BookingHienNpq> GetBookingByIdAsync(int id)
         {
             return await _serviceProviders.BookingHienNpqService.GetByIdAsync(id);
         }
-        public async Task<PaginationResult<List<BookingHienNpq>>> SearchWithPagingAsync(BookingHienNpqSearchRequest searchRequest)
+
+        [GraphQLName("searchBookings")]
+        public async Task<PaginationResult<List<BookingHienNpq>>> SearchBookingsAsync(BookingHienNpqSearchRequest searchRequest)
         {
             return await _serviceProviders.BookingHienNpqService.SearchWithAsyncPaging(searchRequest);
         }

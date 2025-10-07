@@ -1,11 +1,7 @@
 ﻿using OEMEVWarrantyManagementSystem.Repositories.HienNPQ;
 using OEMEVWarrantyManagementSystem.Repositories.HienNPQ.ModelExtensions;
 using OEMEVWarrantyManagementSystem.Repositories.HienNPQ.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static OEMEVWarrantyManagementSystem.Repositories.HienNPQ.ModelExtensions.SearchRequest;
 
 namespace OEMEVWarrantyManagementSystem.Service.HienNPQ
 {
@@ -80,13 +76,27 @@ namespace OEMEVWarrantyManagementSystem.Service.HienNPQ
             }
         }
 
-        public async Task<PaginationResult<List<BookingHienNpq>>> SearchWithAsyncPaging(SearchRequest.BookingHienNpqSearchRequest? SearchRequest)
+        public async Task<PaginationResult<List<BookingHienNpq>>> SearchWithAsyncPaging(BookingHienNpqSearchRequest? SearchRequest)
         {
             try
             {
-                return await _repository.SearchWithAsyncPaging(SearchRequest.StationName, SearchRequest.BatteryCapacity.Value, SearchRequest.LicensePlate, SearchRequest.currentPage.Value, SearchRequest.pageSize.Value);
+                var stationName = SearchRequest?.StationName;
+                int? batteryCapacity = SearchRequest?.BatteryCapacity; // do not use .Value
+                var licensePlate = SearchRequest?.LicensePlate;
+
+                // Provide sane defaults if paging is not supplied
+                var currentPage = SearchRequest?.currentPage ?? 1;
+                var pageSize = SearchRequest?.pageSize ?? 10;
+
+                return await _repository.SearchWithAsyncPaging(
+                    stationName,
+                    batteryCapacity,
+                    licensePlate,
+                    currentPage,
+                    pageSize
+                );
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new PaginationResult<List<BookingHienNpq>>();
             }

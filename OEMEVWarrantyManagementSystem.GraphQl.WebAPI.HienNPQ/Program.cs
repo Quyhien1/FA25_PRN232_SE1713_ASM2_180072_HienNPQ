@@ -1,16 +1,24 @@
+using HotChocolate.Types;
+using OEMEVWarrantyManagementSystem.GraphQl.WebAPI.HienNPQ.GraphQl;
 using OEMEVWarrantyManagementSystem.Service.HienNPQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IServiceProviders,ServiceProviders>();
+
+// DI
+builder.Services.AddScoped<IServiceProviders, ServiceProviders>();
+builder.Services.AddScoped<Mutations>(); // <-- Add this
+
+// GraphQL
 builder.Services.AddGraphQLServer()
-    .AddQueryType(d => d.Name("Query")).BindRuntimeType<DateTime, DateTimeType> ();
+    .AddQueryType<Queries>()// Wire up your query resolvers
+    .AddMutationType<Mutations>() // Wire up your mutation resolvers
+    .BindRuntimeType<DateTime, DateTimeType>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -26,6 +34,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseRouting().UseEndpoints(endPoints => { endPoints.MapGraphQL(); });
+// GraphQL endpoint
+app.MapGraphQL();
 
 app.Run();

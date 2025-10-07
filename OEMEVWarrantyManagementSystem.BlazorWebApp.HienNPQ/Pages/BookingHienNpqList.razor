@@ -1,0 +1,33 @@
+﻿@page "/bookinghiennpqlist"
+@using OEMEVWarrantyManagementSystem.BlazorWebApp.HienNPQ.Models
+<h3>BookingHienNpqList</h3>
+
+@if(BookingHienNpq == null)
+{
+    <div> loading</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in BookingHienNpq)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Date</td>
+                </tr>
+            }
+    </tbody>
+    </table>
+}
+@code {
+    private List<BookingHienNpqList> BookingHienNpq
+}
